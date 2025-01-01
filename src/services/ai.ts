@@ -17,6 +17,7 @@ export const generateCode = async (prompt: string, model: AIModel = 'openai') =>
         'Authorization': `Bearer ${session?.access_token}`,
       },
       body: JSON.stringify({ prompt, model }),
+      mode: 'cors',
       credentials: 'include'
     });
 
