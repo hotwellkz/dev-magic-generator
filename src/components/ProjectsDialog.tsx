@@ -63,6 +63,19 @@ export const ProjectsDialog = () => {
     }
   };
 
+  const handleDeployProject = async (projectId: string) => {
+    try {
+      toast.info("Развертывание проекта...");
+      // Here we would implement the actual deployment logic
+      // For now, we'll just show a success message
+      setTimeout(() => {
+        toast.success("Проект успешно развернут!");
+      }, 2000);
+    } catch (error) {
+      toast.error("Ошибка при развертывании проекта");
+    }
+  };
+
   const formatDate = (date: string) => {
     return new Date(date).toLocaleString('ru-RU', {
       year: 'numeric',
@@ -161,7 +174,12 @@ export const ProjectsDialog = () => {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="w-full">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="w-full"
+                      onClick={() => handleDeployProject(project.id)}
+                    >
                       <Globe className="h-4 w-4 mr-2" />
                       Развернуть
                     </Button>

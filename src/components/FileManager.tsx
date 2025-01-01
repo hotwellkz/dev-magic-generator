@@ -25,15 +25,24 @@ const getFileIcon = (fileName: string) => {
 
 export const FileManager = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [expandedFolders, setExpandedFolders] = useState<string[]>(['src']);
+
+  const toggleFolder = (folderPath: string) => {
+    setExpandedFolders(prev => 
+      prev.includes(folderPath) 
+        ? prev.filter(p => p !== folderPath)
+        : [...prev, folderPath]
+    );
+  };
 
   return (
     <div className={cn(
-      "h-full transition-all duration-300 border-r",
+      "h-full transition-all duration-300 border-r bg-sidebar",
       isCollapsed ? "w-[50px]" : "w-[300px]"
     )}>
-      <div className="p-4 border-b flex justify-between items-center bg-accent/50">
+      <div className="p-4 border-b flex justify-between items-center bg-sidebar-accent/50">
         <h2 className={cn(
-          "font-semibold transition-opacity duration-300 flex items-center gap-2",
+          "font-semibold transition-opacity duration-300 flex items-center gap-2 text-sidebar-foreground",
           isCollapsed ? "opacity-0" : "opacity-100"
         )}>
           <Folder className="h-4 w-4 text-blue-500" />
@@ -43,7 +52,7 @@ export const FileManager = () => {
           variant="ghost"
           size="icon"
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="shrink-0 hover:bg-accent"
+          className="shrink-0 hover:bg-sidebar-accent text-sidebar-foreground"
         >
           {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
         </Button>
@@ -53,21 +62,31 @@ export const FileManager = () => {
         isCollapsed ? "opacity-0" : "opacity-100"
       )}>
         <div className="p-4">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 p-2 hover:bg-accent rounded-md cursor-pointer">
+          <div className="space-y-1">
+            <div 
+              className="flex items-center gap-2 p-2 hover:bg-sidebar-accent rounded-md cursor-pointer text-sidebar-foreground"
+              onClick={() => toggleFolder('src')}
+            >
+              {expandedFolders.includes('src') ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronRight className="h-4 w-4" />
+              )}
               <Folder className="h-4 w-4 text-blue-500" />
               <span>src</span>
             </div>
-            <div className="ml-4 space-y-2">
-              <div className="flex items-center gap-2 p-2 hover:bg-accent rounded-md cursor-pointer">
-                <Code className="h-4 w-4 text-yellow-500" />
-                <span>index.tsx</span>
+            {expandedFolders.includes('src') && (
+              <div className="ml-4 space-y-1">
+                <div className="flex items-center gap-2 p-2 hover:bg-sidebar-accent rounded-md cursor-pointer text-sidebar-foreground">
+                  <Code className="h-4 w-4 text-yellow-500" />
+                  <span>index.tsx</span>
+                </div>
+                <div className="flex items-center gap-2 p-2 hover:bg-sidebar-accent rounded-md cursor-pointer text-sidebar-foreground">
+                  <FileText className="h-4 w-4 text-gray-500" />
+                  <span>styles.css</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2 p-2 hover:bg-accent rounded-md cursor-pointer">
-                <FileText className="h-4 w-4 text-gray-500" />
-                <span>styles.css</span>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </ScrollArea>
