@@ -2,11 +2,14 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { generateCode, createProject } from "@/services/api";
+import { useProjects } from "@/hooks/use-projects";
 
 export const PromptInput = () => {
   const [prompt, setPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { createProject: createProjectMutation } = useProjects();
 
   const handleSubmit = async () => {
     if (!prompt.trim()) {
@@ -20,28 +23,25 @@ export const PromptInput = () => {
 
     setIsLoading(true);
     try {
-      const response = await fetch("/api/code/generate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ prompt, model: "openai" }),
+      const { result } = await generateCode(prompt);
+      
+      // Создаем новый проект
+      await createProjectMutation.mutateAsync({
+        name: `Проект от ${new Date().toLocaleDateString()}`,
+        description: result
       });
 
-      if (!response.ok) {
-        throw new Error("Ошибка при генерации кода");
-      }
-
-      const data = await response.json();
       toast({
         title: "Успешно",
-        description: "Код успешно сгенерирован",
+        description: "Код успешно сгенерирован и сохранен",
       });
+      
       setPrompt("");
     } catch (error) {
+      console.error('Error:', error);
       toast({
         title: "Ошибка",
-        description: "Не удалось сгенерировать код",
+        description: error instanceof Error ? error.message : "Не удалось сгенерировать код",
         variant: "destructive",
       });
     } finally {

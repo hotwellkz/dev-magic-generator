@@ -26,10 +26,10 @@ export const useProjects = () => {
   });
 
   const createProject = useMutation({
-    mutationFn: async (name: string) => {
+    mutationFn: async ({ name, description }: { name: string; description: string }) => {
       const { data, error } = await supabase
         .from("projects")
-        .insert([{ name }])
+        .insert([{ name, description }])
         .select()
         .single();
 
