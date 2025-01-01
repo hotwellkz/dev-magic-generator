@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client'
 export type AIModel = 'openai' | 'anthropic'
 
 const API_URL = import.meta.env.PROD 
-  ? 'https://your-backend-domain.com/api' 
+  ? 'https://your-railway-app-url.railway.app/api' 
   : 'http://localhost:3000/api';
 
 export const generateCode = async (prompt: string, model: AIModel = 'openai') => {
