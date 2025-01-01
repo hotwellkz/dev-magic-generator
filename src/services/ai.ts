@@ -8,7 +8,7 @@ export const generateCode = async (prompt: string, model: AIModel = 'openai') =>
   try {
     const { data: { session } } = await supabase.auth.getSession()
     
-    console.log('Making request to:', `${API_URL}/api/code/generate`); // Добавляем лог для отладки
+    console.log('Making request to:', `${API_URL}/api/code/generate`);
     
     const response = await fetch(`${API_URL}/api/code/generate`, {
       method: 'POST',
@@ -22,7 +22,7 @@ export const generateCode = async (prompt: string, model: AIModel = 'openai') =>
 
     if (!response.ok) {
       const error = await response.json();
-      console.error('API Error:', error); // Добавляем лог для отладки
+      console.error('API Error:', error);
       throw new Error(error.message || 'Failed to generate code');
     }
 
