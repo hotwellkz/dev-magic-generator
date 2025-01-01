@@ -18,18 +18,11 @@ const limiter = rateLimit({
   max: 100
 });
 
-// Обновляем настройки CORS для разрешения запросов с вашего домена
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production'
-    ? [
-        'https://sweet-llama-e0019a.netlify.app',
-        'http://localhost:8080',
-        'http://localhost:3000',
-        'https://gptengineer.app',
-        'https://lovable.dev'
-      ]
-    : '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    ? ['https://sweet-llama-e0019a.netlify.app']
+    : ['http://localhost:8080'],
+  methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
   maxAge: 86400
