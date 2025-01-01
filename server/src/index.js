@@ -18,16 +18,15 @@ const limiter = rateLimit({
   max: 100
 });
 
+// Обновляем настройки CORS для разрешения запросов с вашего домена
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production'
     ? [
         'https://your-netlify-app-url.netlify.app',
         'http://localhost:8080',
-        'http://localhost:3000',
-        'http://127.0.0.1:8080',
-        'http://127.0.0.1:3000'
+        'http://localhost:3000'
       ]
-  : true,
+    : '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
