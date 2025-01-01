@@ -11,10 +11,13 @@ export interface Project {
   updated_at: string;
 }
 
+// URL вашего бэкенда на Railway
+const API_URL = "https://lavish-stillness-anthropicapikey.up.railway.app";
+
 export const generateCode = async (prompt: string, model: 'openai' | 'anthropic' = 'openai'): Promise<string> => {
   try {
     // Используем полный URL для API
-    const response = await fetch('http://localhost:3000/api/code/generate', {
+    const response = await fetch(`${API_URL}/api/code/generate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -30,6 +33,7 @@ export const generateCode = async (prompt: string, model: 'openai' | 'anthropic'
     return data.result;
   } catch (error) {
     console.error('Error generating code:', error);
+    toast.error('Не удалось сгенерировать код. Попробуйте снова.');
     throw error;
   }
 };
@@ -49,9 +53,12 @@ export const saveProject = async (name: string, prompt: string, generatedCode: s
       .single();
 
     if (error) throw error;
+
+    toast.success('Проект успешно сохранен!');
     return data;
   } catch (error) {
     console.error('Error saving project:', error);
+    toast.error('Не удалось сохранить проект.');
     throw error;
   }
 };
@@ -64,9 +71,11 @@ export const getProjects = async (): Promise<Project[]> => {
       .order('created_at', { ascending: false });
 
     if (error) throw error;
+
     return data;
   } catch (error) {
     console.error('Error fetching projects:', error);
+    toast.error('Не удалось загрузить проекты.');
     throw error;
   }
 };
@@ -79,8 +88,11 @@ export const deleteProject = async (id: string): Promise<void> => {
       .eq('id', id);
 
     if (error) throw error;
+
+    toast.success('Проект успешно удален!');
   } catch (error) {
     console.error('Error deleting project:', error);
+    toast.error('Не удалось удалить проект.');
     throw error;
   }
 };
