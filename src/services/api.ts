@@ -13,7 +13,8 @@ export interface Project {
 
 export const generateCode = async (prompt: string, model: 'openai' | 'anthropic' = 'openai'): Promise<string> => {
   try {
-    const response = await fetch('/api/code/generate', {
+    // Используем полный URL для API
+    const response = await fetch('http://localhost:3000/api/code/generate', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
