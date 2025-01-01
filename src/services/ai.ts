@@ -2,25 +2,31 @@ import { supabase } from '@/integrations/supabase/client'
 
 export type AIModel = 'openai' | 'anthropic'
 
+const API_URL = import.meta.env.PROD 
+  ? 'https://your-backend-domain.com/api' 
+  : 'http://localhost:3000/api';
+
 export const generateCode = async (prompt: string, model: AIModel = 'openai') => {
-  const { data: { session } } = await supabase.auth.getSession()
-  
-  const response = await fetch(
-    'https://tihzvdrwejnzeiaectey.supabase.co/functions/v1/generate-code',
-    {
+  try {
+    const { data: { session } } = await supabase.auth.getSession()
+    
+    const response = await fetch(`${API_URL}/code/generate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${session?.access_token}`,
       },
       body: JSON.stringify({ prompt, model }),
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.message || 'Failed to generate code')
     }
-  )
 
-  if (!response.ok) {
-    const error = await response.json()
-    throw new Error(error.message || 'Failed to generate code')
+    return response.json()
+  } catch (error) {
+    console.error('Error generating code:', error)
+    throw error
   }
-
-  return response.json()
 }
