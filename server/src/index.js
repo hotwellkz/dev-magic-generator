@@ -19,7 +19,7 @@ const limiter = rateLimit({
 });
 
 const corsOptions = {
-  origin: ['https://sweet-llama-e0019a.netlify.app'],
+  origin: '*', // Разрешаем запросы с любого источника в режиме no-cors
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
