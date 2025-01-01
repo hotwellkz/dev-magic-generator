@@ -16,9 +16,10 @@ const anthropic = new Anthropic({
 
 codeRoutes.post('/generate', async (req, res, next) => {
   try {
-    const { prompt, model } = req.body;
+    const { prompt, model = 'openai' } = req.body;
 
     if (!prompt) {
+      logger.error('Отсутствует prompt в запросе');
       return res.status(400).json({ error: 'Необходимо указать prompt' });
     }
 
@@ -36,22 +37,26 @@ codeRoutes.post('/generate', async (req, res, next) => {
             role: "user",
             content: prompt
           }
-        ]
+        ],
+        temperature: 0.7,
+        max_tokens: 1500
       });
       
       result = completion.choices[0].message.content;
     } else if (model === 'anthropic') {
       const message = await anthropic.messages.create({
         model: "claude-3-opus-20240229",
-        max_tokens: 4096,
+        max_tokens: 1500,
         messages: [{
           role: "user",
           content: prompt
-        }]
+        }],
+        temperature: 0.7
       });
       
       result = message.content[0].text;
     } else {
+      logger.error(`Неподдерживаемая модель: ${model}`);
       return res.status(400).json({ error: 'Неподдерживаемая модель' });
     }
 
