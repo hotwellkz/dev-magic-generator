@@ -3,9 +3,13 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
+import dotenv from 'dotenv';
 import { logger } from './utils/logger.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { codeRoutes } from './routes/code.js';
+
+// Загрузка переменных окружения
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
