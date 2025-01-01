@@ -22,7 +22,7 @@ const limiter = rateLimit({
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production'
     ? [
-        'https://your-netlify-app-url.netlify.app',
+        'https://sweet-llama-e0019a.netlify.app',
         'http://localhost:8080',
         'http://localhost:3000'
       ]
