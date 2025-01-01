@@ -30,7 +30,7 @@ codeRoutes.post('/generate', async (req, res, next) => {
     
     if (model === 'openai') {
       const completion = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
+        model: "gpt-4",
         messages: [
           {
             role: "system",
@@ -83,7 +83,6 @@ codeRoutes.post('/generate', async (req, res, next) => {
       model: req.body.model
     });
     
-    // Определяем тип ошибки для возврата соответствующего статус-кода
     if (error.response?.status === 401) {
       return res.status(401).json({ 
         error: 'Ошибка аутентификации API',

@@ -2,15 +2,13 @@ import { supabase } from '@/integrations/supabase/client'
 
 export type AIModel = 'openai' | 'anthropic'
 
-const API_URL = import.meta.env.PROD 
-  ? 'https://your-backend-domain.com/api' 
-  : 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const generateCode = async (prompt: string, model: AIModel = 'openai') => {
   try {
     const { data: { session } } = await supabase.auth.getSession()
     
-    const response = await fetch(`${API_URL}/code/generate`, {
+    const response = await fetch(`${API_URL}/api/code/generate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
