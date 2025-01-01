@@ -24,20 +24,30 @@ serve(async (req) => {
     if (model === 'openai') {
       const openai = new OpenAI(Deno.env.get('OPENAI_API_KEY')!)
       const completion = await openai.createChatCompletion({
-        model: 'gpt-4',
-        messages: [{ role: 'user', content: prompt }],
+        model: 'gpt-4o-mini',
+        messages: [
+          { 
+            role: 'system', 
+            content: 'You are an AI assistant that helps generate code based on user prompts. Focus on writing clean, efficient, and well-documented code.' 
+          },
+          { role: 'user', content: prompt }
+        ],
       })
       response = completion.choices[0].message.content
     } else if (model === 'anthropic') {
       const anthropic = new Anthropic(Deno.env.get('ANTHROPIC_API_KEY')!)
       const completion = await anthropic.messages.create({
         model: 'claude-3-opus-20240229',
+        max_tokens: 4000,
+        system: 'You are an AI assistant that helps generate code based on user prompts. Focus on writing clean, efficient, and well-documented code.',
         messages: [{ role: 'user', content: prompt }],
       })
       response = completion.content[0].text
     } else {
       throw new Error('Invalid model specified')
     }
+
+    console.log(`Generated response using ${model} model:`, response)
 
     return new Response(
       JSON.stringify({ response }),
@@ -46,6 +56,7 @@ serve(async (req) => {
       },
     )
   } catch (error) {
+    console.error('Error in generate-code function:', error)
     return new Response(
       JSON.stringify({ error: error.message }),
       {
