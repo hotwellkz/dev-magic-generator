@@ -24,7 +24,8 @@ export const generateCode = async (prompt: string, model: AIModel = 'openai') =>
       throw new Error(error.message || 'Failed to generate code')
     }
 
-    return response.json()
+    const data = await response.json()
+    return { response: data.result }
   } catch (error) {
     console.error('Error generating code:', error)
     throw error
