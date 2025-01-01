@@ -4,7 +4,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -13,6 +12,7 @@ import { useProjects } from "@/hooks/use-projects";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 export const ProjectsDialog = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,6 +31,23 @@ export const ProjectsDialog = () => {
       toast.success("Проект создан");
     } catch (error) {
       toast.error("Ошибка при создании проекта");
+    }
+  };
+
+  const handleDeleteProject = async (projectId: string) => {
+    try {
+      const { error } = await supabase
+        .from("projects")
+        .delete()
+        .eq("id", projectId);
+
+      if (error) throw error;
+      
+      toast.success("Проект удален");
+      // Обновляем список проектов через react-query
+      createProject.invalidate();
+    } catch (error) {
+      toast.error("Ошибка при удалении проекта");
     }
   };
 
@@ -79,7 +96,8 @@ export const ProjectsDialog = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="text-destructive hover:text-destructive"
+                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                    onClick={() => handleDeleteProject(project.id)}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
