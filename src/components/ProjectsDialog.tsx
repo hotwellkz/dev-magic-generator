@@ -39,7 +39,10 @@ export const ProjectsDialog = () => {
     }
 
     try {
-      await createProject.mutateAsync(newProjectName);
+      await createProject.mutateAsync({
+        name: newProjectName,
+        description: "" // Пустое описание для нового проекта
+      });
       setNewProjectName("");
       toast.success("Проект создан");
     } catch (error) {
