@@ -46,8 +46,7 @@ const AuthPage = () => {
                   button_label: "Войти",
                   loading_button_label: "Вход...",
                   social_provider_text: "Войти через {{provider}}",
-                  link_text: "Уже есть аккаунт? Войти",
-                  confirmation_text: "Проверьте свою почту для подтверждения",
+                  link_text: "Уже есть аккаунт? Войти"
                 },
                 sign_up: {
                   email_label: "Email адрес",
@@ -55,16 +54,14 @@ const AuthPage = () => {
                   button_label: "Зарегистрироваться",
                   loading_button_label: "Регистрация...",
                   social_provider_text: "Зарегистрироваться через {{provider}}",
-                  link_text: "Нет аккаунта? Зарегистрироваться",
-                  confirmation_text: "Проверьте свою почту для подтверждения регистрации",
+                  link_text: "Нет аккаунта? Зарегистрироваться"
                 },
                 forgotten_password: {
                   email_label: "Email адрес",
                   password_label: "Пароль",
                   button_label: "Сбросить пароль",
                   loading_button_label: "Отправка инструкций...",
-                  link_text: "Забыли пароль?",
-                  confirmation_text: "Проверьте свою почту для сброса пароля",
+                  link_text: "Забыли пароль?"
                 },
               },
             }}
