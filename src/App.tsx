@@ -43,9 +43,9 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <div className="flex flex-col min-h-screen">
+      <div className="app-container">
         <Header />
-        <main className="flex-1">
+        <main className="main-content">
           <BrowserRouter>
             <Routes>
               <Route
