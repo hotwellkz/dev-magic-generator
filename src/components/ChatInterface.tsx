@@ -3,6 +3,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState } from "react";
 import { Send } from "lucide-react";
+import { generateCode } from "@/services/ai";
+import { useToast } from "@/hooks/use-toast";
 
 interface Message {
   id: string;
@@ -14,22 +16,44 @@ interface Message {
 export const ChatInterface = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [prompt, setPrompt] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!prompt.trim()) return;
+    if (!prompt.trim() || isLoading) return;
 
-    const newMessage: Message = {
+    const userMessage: Message = {
       id: Date.now().toString(),
       content: prompt,
       timestamp: new Date(),
       type: "user",
     };
 
-    setMessages((prev) => [...prev, newMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setPrompt("");
+    setIsLoading(true);
 
-    // TODO: Здесь будет логика обработки промта и генерации кода
+    try {
+      const { response } = await generateCode(prompt);
+      
+      const aiMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        content: response,
+        timestamp: new Date(),
+        type: "ai",
+      };
+
+      setMessages((prev) => [...prev, aiMessage]);
+    } catch (error) {
+      toast({
+        title: "Ошибка",
+        description: error.message || "Не удалось сгенерировать код",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -58,8 +82,9 @@ export const ChatInterface = () => {
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Опишите, какой код вы хотите сгенерировать..."
             className="min-h-[60px]"
+            disabled={isLoading}
           />
-          <Button type="submit" size="icon">
+          <Button type="submit" size="icon" disabled={isLoading}>
             <Send className="h-4 w-4" />
           </Button>
         </div>
