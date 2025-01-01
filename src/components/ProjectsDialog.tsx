@@ -13,11 +13,13 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const ProjectsDialog = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [newProjectName, setNewProjectName] = useState("");
   const { projects, isLoading, createProject } = useProjects();
+  const queryClient = useQueryClient();
 
   const handleCreateProject = async () => {
     if (!newProjectName.trim()) {
@@ -45,7 +47,7 @@ export const ProjectsDialog = () => {
       
       toast.success("Проект удален");
       // Обновляем список проектов через react-query
-      createProject.invalidate();
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
     } catch (error) {
       toast.error("Ошибка при удалении проекта");
     }
