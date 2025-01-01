@@ -16,13 +16,28 @@ const limiter = rateLimit({
   max: 100 // Лимит запросов с одного IP
 });
 
+// Настройка CORS
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production'
+    ? [
+        'https://lovable.dev',
+        'https://tihzvdrwejnzeiaectey.supabase.co'
+      ]
+    : [
+        'http://localhost:8080',
+        'http://localhost:3000',
+        'http://127.0.0.1:8080',
+        'http://127.0.0.1:3000'
+      ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  credentials: true,
+  maxAge: 86400 // 24 часа кэширование preflight запросов
+};
+
 // Middleware
 app.use(helmet()); // Защита заголовков
-app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? 'https://your-frontend-domain.com' 
-    : 'http://localhost:8080'
-}));
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(morgan('combined', { stream: { write: message => logger.info(message.trim()) } }));
 app.use(limiter);
