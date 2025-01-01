@@ -4,8 +4,9 @@ import { toast } from "sonner";
 export interface Project {
   id: string;
   name: string;
-  prompt: string;
-  generated_code: string;
+  prompt?: string;
+  generated_code?: string;
+  description: string | null;
   created_at: string;
   updated_at: string;
 }
