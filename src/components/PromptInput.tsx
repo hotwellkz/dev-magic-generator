@@ -2,14 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { toast } from "sonner";
-import { generateCode } from "@/services/api";
-import { useProjects } from "@/hooks/use-projects";
+import { generateCode, saveProject } from "@/services/api";
 import { Loader2 } from "lucide-react";
 
 export const PromptInput = () => {
   const [prompt, setPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { createProject } = useProjects();
 
   const handleSubmit = async () => {
     if (!prompt.trim()) {
@@ -19,13 +17,14 @@ export const PromptInput = () => {
 
     setIsLoading(true);
     try {
-      const { result } = await generateCode(prompt);
+      const generatedCode = await generateCode(prompt);
       
-      // Создаем новый проект с сгенерированным кодом
-      await createProject.mutateAsync({
-        name: `Проект от ${new Date().toLocaleDateString()}`,
-        description: result
-      });
+      // Сохраняем проект
+      await saveProject(
+        `Проект от ${new Date().toLocaleDateString()}`,
+        prompt,
+        generatedCode
+      );
 
       toast.success("Код успешно сгенерирован и сохранен");
       setPrompt("");
