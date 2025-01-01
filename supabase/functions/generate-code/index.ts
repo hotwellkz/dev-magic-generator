@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { OpenAI } from "https://deno.land/x/openai@v4.69.0/mod.ts"
-import { Anthropic } from "https://deno.land/x/anthropic/mod.ts"
+import { Anthropic } from "npm:@anthropic-ai/sdk@0.17.1"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -23,7 +23,7 @@ serve(async (req) => {
 
     if (model === 'openai') {
       const openai = new OpenAI(Deno.env.get('OPENAI_API_KEY')!)
-      const completion = await openai.createChatCompletion({
+      const completion = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [
           { 
@@ -35,7 +35,9 @@ serve(async (req) => {
       })
       response = completion.choices[0].message.content
     } else if (model === 'anthropic') {
-      const anthropic = new Anthropic(Deno.env.get('ANTHROPIC_API_KEY')!)
+      const anthropic = new Anthropic({
+        apiKey: Deno.env.get('ANTHROPIC_API_KEY')!,
+      })
       const completion = await anthropic.messages.create({
         model: 'claude-3-opus-20240229',
         max_tokens: 4000,
