@@ -8,7 +8,6 @@ const AuthPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Проверяем статус авторизации при загрузке страницы
     supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
         navigate("/");
@@ -20,9 +19,9 @@ const AuthPage = () => {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md space-y-4">
         <div className="text-center space-y-2">
-          <h1 className="text-2xl font-bold">Добро пожаловать</h1>
+          <h1 className="text-2xl font-bold">Добро пожаловать в AI Code Generator</h1>
           <p className="text-muted-foreground">
-            Войдите или создайте аккаунт для продолжения
+            Войдите или создайте аккаунт для начала работы
           </p>
         </div>
         <div className="border rounded-lg p-4 bg-card">
@@ -48,14 +47,16 @@ const AuthPage = () => {
                   loading_button_label: "Вход...",
                   social_provider_text: "Войти через {{provider}}",
                   link_text: "Уже есть аккаунт? Войти",
+                  confirmation_text: "Проверьте свою почту для подтверждения",
                 },
                 sign_up: {
                   email_label: "Email адрес",
                   password_label: "Пароль",
-                  button_label: "Регистрация",
+                  button_label: "Зарегистрироваться",
                   loading_button_label: "Регистрация...",
                   social_provider_text: "Зарегистрироваться через {{provider}}",
                   link_text: "Нет аккаунта? Зарегистрироваться",
+                  confirmation_text: "Проверьте свою почту для подтверждения регистрации",
                 },
                 forgotten_password: {
                   email_label: "Email адрес",
@@ -63,6 +64,7 @@ const AuthPage = () => {
                   button_label: "Сбросить пароль",
                   loading_button_label: "Отправка инструкций...",
                   link_text: "Забыли пароль?",
+                  confirmation_text: "Проверьте свою почту для сброса пароля",
                 },
               },
             }}
