@@ -5,9 +5,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Folder, Plus, Trash2 } from "lucide-react";
+import { Folder, Plus, Trash2, Globe, Clock, FileText } from "lucide-react";
 import { useProjects } from "@/hooks/use-projects";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
@@ -46,11 +57,20 @@ export const ProjectsDialog = () => {
       if (error) throw error;
       
       toast.success("Проект удален");
-      // Обновляем список проектов через react-query
       queryClient.invalidateQueries({ queryKey: ["projects"] });
     } catch (error) {
       toast.error("Ошибка при удалении проекта");
     }
+  };
+
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleString('ru-RU', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
 
   return (
@@ -61,7 +81,7 @@ export const ProjectsDialog = () => {
           Проекты
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>История проектов</DialogTitle>
         </DialogHeader>
@@ -75,7 +95,7 @@ export const ProjectsDialog = () => {
             <Plus className="h-4 w-4" />
           </Button>
         </div>
-        <ScrollArea className="h-[300px]">
+        <ScrollArea className="h-[400px]">
           <div className="space-y-4">
             {isLoading ? (
               <div className="p-4 text-center">Загрузка...</div>
@@ -87,22 +107,65 @@ export const ProjectsDialog = () => {
               projects?.map((project) => (
                 <div
                   key={project.id}
-                  className="p-4 border rounded-lg flex justify-between items-center"
+                  className="p-4 border rounded-lg space-y-3 hover:bg-accent/50 transition-colors"
                 >
-                  <div>
-                    <h3 className="font-medium">{project.name}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Создан: {new Date(project.created_at).toLocaleDateString()}
-                    </p>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-medium text-lg flex items-center gap-2">
+                        <FileText className="h-4 w-4" />
+                        {project.name}
+                      </h3>
+                      {project.description && (
+                        <p className="text-sm text-muted-foreground mt-1">
+                          {project.description}
+                        </p>
+                      )}
+                    </div>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Удалить проект?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Это действие нельзя отменить. Проект будет удален безвозвратно.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Отмена</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => handleDeleteProject(project.id)}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          >
+                            Удалить
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                    onClick={() => handleDeleteProject(project.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                  <div className="flex gap-4 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-4 w-4" />
+                      Создан: {formatDate(project.created_at)}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-4 w-4" />
+                      Обновлен: {formatDate(project.updated_at)}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" className="w-full">
+                      <Globe className="h-4 w-4 mr-2" />
+                      Развернуть
+                    </Button>
+                  </div>
                 </div>
               ))
             )}
