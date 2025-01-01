@@ -8,6 +8,8 @@ export const generateCode = async (prompt: string, model: AIModel = 'openai') =>
   try {
     const { data: { session } } = await supabase.auth.getSession()
     
+    console.log('Making request to:', `${API_URL}/api/code/generate`); // Добавляем лог для отладки
+    
     const response = await fetch(`${API_URL}/api/code/generate`, {
       method: 'POST',
       headers: {
@@ -15,17 +17,19 @@ export const generateCode = async (prompt: string, model: AIModel = 'openai') =>
         'Authorization': `Bearer ${session?.access_token}`,
       },
       body: JSON.stringify({ prompt, model }),
-    })
+      credentials: 'include'
+    });
 
     if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.message || 'Failed to generate code')
+      const error = await response.json();
+      console.error('API Error:', error); // Добавляем лог для отладки
+      throw new Error(error.message || 'Failed to generate code');
     }
 
-    const data = await response.json()
-    return { response: data.result }
+    const data = await response.json();
+    return { response: data.result };
   } catch (error) {
-    console.error('Error generating code:', error)
-    throw error
+    console.error('Error generating code:', error);
+    throw error;
   }
 }

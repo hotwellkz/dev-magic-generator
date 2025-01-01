@@ -24,7 +24,9 @@ const corsOptions = {
     ? [
         'https://sweet-llama-e0019a.netlify.app',
         'http://localhost:8080',
-        'http://localhost:3000'
+        'http://localhost:3000',
+        'https://gptengineer.app',
+        'https://lovable.dev'
       ]
     : '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
